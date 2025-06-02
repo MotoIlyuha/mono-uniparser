@@ -1,8 +1,14 @@
 {
   "version": 2,
-  "buildCommand": "npm --prefix client run build",
-  "outputDirectory": "client/dist",
   "builds": [
+    {
+      "src": "client/",
+      "use": "@vercel/static-build",
+      "config": {
+        "buildCommand": "npm run build",
+        "outputDirectory": "dist"
+      }
+    },
     {
       "src": "server/app.py",
       "use": "@vercel/python",
@@ -16,7 +22,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/client/dist/index.html"
+      "dest": "/index.html"
     }
   ]
 } 
