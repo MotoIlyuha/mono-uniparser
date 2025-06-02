@@ -4,7 +4,7 @@
     {
       "src": "client/package.json",
       "use": "@vercel/node",
-      "config": { "distDir": "client/dist" }
+      "config": { "distDir": "client/dist", "outputDirectory": "dist" }
     },
     {
       "src": "server/app.py",
