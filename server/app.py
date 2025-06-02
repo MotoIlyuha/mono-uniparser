@@ -1,5 +1,5 @@
 import logging
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, render_template
 import re
 import os
 from flask_cors import CORS # Импортируем CORS
@@ -11,6 +11,35 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*", "methods": "*"}}) # Инициализируем CORS для вашего Flask-приложения
+
+@app.route('/test')
+def test_page():
+    logging.info("Запрос на страницу теста")
+    return render_template('test.html')
+
+@app.route('/test_rollingmoto', methods=['POST'])
+def test_rollingmoto():
+    logging.info("Получен запрос на парсинг RollingMoto для теста")
+    data = request.get_json()
+    url = data.get('url')
+
+    if not url:
+        logging.warning("URL не предоставлен в запросе на парсинг RollingMoto")
+        return jsonify({"error": "URL is required"}), 400
+
+    # Здесь мы используем существующую логику парсинга каталога
+    # Вы можете адаптировать это, если вам нужна другая логика парсинга
+    try:
+        products, total_items = parse_catalog(url)
+        if products:
+            logging.info(f"Успешно спарсен каталог RollingMoto: {url}, найдено товаров: {total_items}")
+            return jsonify({"type": "catalog", "products": products, "totalItems": total_items})
+        else:
+            logging.error(f"Ошибка парсинга каталога RollingMoto или товары не найдены: {url}")
+            return jsonify({"error": "Ошибка парсинга каталога или товары не найдены"}), 500
+    except Exception as e:
+        logging.error(f"Ошибка при парсинге RollingMoto: {str(e)}", exc_info=True)
+        return jsonify({"error": f"Ошибка при парсинге RollingMoto: {str(e)}"}), 500
 
 @app.route('/parse_url', methods=['POST'])
 def parse_url():

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Server Test</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        pre { background-color: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Тест Flask-сервера</h1>
+    <button id="testButton">Получить данные с RollingMoto.ru</button>
+    <p>URL для теста: <code>https://www.rollingmoto.ru/catalog/mototekhnika/mototsikly/filter/brend_tovara-is-82c3cf0a-de4e-11eb-80d7-00155d605903/apply/</code></p>
+    <h2>Результат:</h2>
+    <pre id="result"></pre>
+
+    <script>
+        document.getElementById('testButton').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Загрузка...';
+            resultDiv.classList.remove('error');
+
+            try {
+                // Отправляем запрос на наш Flask-сервер
+                const response = await fetch('/test_rollingmoto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        url: 'https://www.rollingmoto.ru/catalog/mototekhnika/mototsikly/filter/brend_tovara-is-82c3cf0a-de4e-11eb-80d7-00155d605903/apply/'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Ошибка запроса');
+                }
+
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.textContent = 'Ошибка: ' + error.message;
+                resultDiv.classList.add('error');
+                console.error('Frontend error:', error);
+            }
+        });
+    </script>
+</body>
+</html> 
