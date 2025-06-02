@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { ServerResponse, Product } from '../types';
 
-const API_BASE_URL = '/'; // Базовый URL для Flask-сервера
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'; // Базовый URL для Flask-сервера, используем переменную окружения
 
 const api = axios.create({
     baseURL: API_BASE_URL,
