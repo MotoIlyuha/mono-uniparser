@@ -12,6 +12,11 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*", "methods": "*"}}) # Инициализируем CORS для вашего Flask-приложения
 
+@app.route('/')
+def test_page():
+    logging.info("Запрос на главную страницу")
+    return "Главная страница"
+
 @app.route('/test')
 def test_page():
     logging.info("Запрос на страницу теста")
